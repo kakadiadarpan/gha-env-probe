@@ -4,6 +4,8 @@ on:
     secrets:
       PASSED:
         required: true
+      WRITER_DSN:
+        required: false
 jobs:
   conditional:
     runs-on: ubuntu-latest
@@ -16,6 +18,13 @@ jobs:
         env:
           ENV_SECRET: ${{ secrets.WRITER_DSN }}
           PASSED: ${{ secrets.PASSED }}
+  inherit_probe:
+    runs-on: ubuntu-latest
+    environment: writer
+    steps:
+      - run: echo "declared env_secret_len=${#ENV_SECRET}"
+        env:
+          ENV_SECRET: ${{ secrets.WRITER_DSN }}
   forced:
     runs-on: ubuntu-latest
     environment: writer

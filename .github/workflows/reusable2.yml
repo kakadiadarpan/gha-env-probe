@@ -1,0 +1,12 @@
+name: reusable2
+on:
+  workflow_call:
+jobs:
+  forced:
+    runs-on: ubuntu-latest
+    environment: writer
+    steps:
+      - run: echo "inherit env_secret_len=${#ENV_SECRET} repo_len=${#REPO}"
+        env:
+          ENV_SECRET: ${{ secrets.WRITER_DSN }}
+          REPO: ${{ secrets.REPO_SECRET }}
