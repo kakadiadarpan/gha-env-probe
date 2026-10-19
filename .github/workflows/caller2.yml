@@ -1,8 +1,0 @@
-name: caller-inherit
-on:
-  push:
-    branches: [main]
-jobs:
-  call:
-    uses: ./.github/workflows/reusable2.yml
-    secrets: inherit

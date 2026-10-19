@@ -1,0 +1,32 @@
+name: ClickHouse Warehouse
+on:
+  workflow_call:
+    inputs:
+      warehouse:
+        type: string
+        required: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'clickhouse-schemas - writer' || '' }}
+    steps:
+      - name: Register pending migrations
+        if: ${{ github.ref == 'refs/heads/main' }}
+        env:
+          CLICKHOUSE_DSN: ${{ fromJSON(secrets.CLICKHOUSE_SCHEMA_DSNS)[inputs.warehouse] }}
+        run: echo "register write=$CLICKHOUSE_DSN" | sed 's/-dsn-/-DSN-/'
+      - name: Validate migrations
+        env:
+          CLICKHOUSE_DSN: ${{ fromJSON(secrets.CLICKHOUSE_VALIDATE_DSNS)[inputs.warehouse] }}
+          WRITE: ${{ secrets.CLICKHOUSE_SCHEMA_DSNS }}
+        run: echo "validate reader=$CLICKHOUSE_DSN write_len=${#WRITE}" | sed 's/-dsn-/-DSN-/'
+  apply:
+    needs: [validate]
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    environment: clickhouse-schemas - writer
+    steps:
+      - name: Apply migrations
+        env:
+          CLICKHOUSE_DSN: ${{ fromJSON(secrets.CLICKHOUSE_SCHEMA_DSNS)[inputs.warehouse] }}
+        run: echo "apply write=$CLICKHOUSE_DSN" | sed 's/-dsn-/-DSN-/'

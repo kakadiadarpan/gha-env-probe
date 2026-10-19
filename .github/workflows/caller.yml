@@ -1,9 +1,0 @@
-name: caller
-on:
-  push:
-  pull_request:
-jobs:
-  call:
-    uses: ./.github/workflows/reusable.yml
-    secrets:
-      PASSED: ${{ secrets.REPO_SECRET }}

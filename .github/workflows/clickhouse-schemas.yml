@@ -1,0 +1,11 @@
+name: ClickHouse Schemas
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  warehouse-vercel-main:
+    uses: ./.github/workflows/clickhouse-warehouse.yml
+    with:
+      warehouse: warehouse_vercel_main
+    secrets: inherit
