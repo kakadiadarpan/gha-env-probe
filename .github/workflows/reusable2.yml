@@ -6,7 +6,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: writer
     steps:
-      - run: echo "inherit env_secret_len=${#ENV_SECRET} repo_len=${#REPO}"
+      - run: echo "inherit-env env_secret_len=${#ENV_SECRET}"
         env:
           ENV_SECRET: ${{ secrets.WRITER_DSN }}
-          REPO: ${{ secrets.REPO_SECRET }}
+  noenv:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "inherit-noenv secret_len=${#ENV_SECRET}"
+        env:
+          ENV_SECRET: ${{ secrets.WRITER_DSN }}
