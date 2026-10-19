@@ -1,0 +1,25 @@
+name: reusable
+on:
+  workflow_call:
+    secrets:
+      PASSED:
+        required: true
+jobs:
+  conditional:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'writer' || '' }}
+    steps:
+      - run: |
+          echo "ref=$GITHUB_REF"
+          echo "env_secret_len=${#ENV_SECRET}"
+          echo "passed_len=${#PASSED}"
+        env:
+          ENV_SECRET: ${{ secrets.WRITER_DSN }}
+          PASSED: ${{ secrets.PASSED }}
+  forced:
+    runs-on: ubuntu-latest
+    environment: writer
+    steps:
+      - run: echo "forced env_secret_len=${#ENV_SECRET}"
+        env:
+          ENV_SECRET: ${{ secrets.WRITER_DSN }}
